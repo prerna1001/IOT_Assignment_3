@@ -1,0 +1,21 @@
+Brief explanation of the steps that you have used in developing the IOT system:
+
+    To begin this project, I set up a Python virtual environment and installed the necessary libraries, 
+    mainly paho-mqtt, which allowed my system to communicate using the MQTT protocol.
+
+    I then created a script (virtual_sensor.py) that acts like a virtual environmental station. 
+    This script randomly generates realistic data for three sensors — temperature, humidity, and CO₂ — and 
+    publishes that data every 10 seconds to a cloud-based MQTT broker. Each message includes a timestamp and a 
+    unique station ID, helping simulate how actual IoT stations might behave.
+
+    Next, I built a second script (sensor_receiver.py) to subscribe to the same MQTT topic and display the 
+    most recent sensor values from a specific station. This helped confirm that the data was being transmitted 
+    and received properly in real-time.
+
+    To meet the final requirement, I added a third script (data_storage.py) that stores all incoming 
+    sensor data locally in a JSON file. This script can also retrieve and display sensor readings from the 
+    last five hours, filtered by the sensor type the user chooses (like temperature or humidity).
+
+    I tested everything by running the sensor and subscriber scripts together and verified the results 
+    with screenshots. Overall, the system works smoothly and demonstrates how virtual IoT stations can mimic 
+    real-time environmental monitoring using MQTT.
