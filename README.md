@@ -45,7 +45,7 @@ This project demonstrates an IoT system that simulates an environmental monitori
 ## 📷 Screenshots
 
 ### ThingSpeak Dashboard:
-![Dashboard View](https://thingspeak.mathworks.com/channels/2894353)
+dashboard : https://thingspeak.mathworks.com/channels/2894353
 https://thingspeak.mathworks.com/apps/matlab_visualizations/612903
 
 ---
