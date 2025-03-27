@@ -1,45 +1,43 @@
-# virtual_sensor.py
-
+import paho.mqtt.client as mqtt
 import random
 import time
-import json
-import datetime
-import paho.mqtt.client as mqtt
 
-# MQTT settings (we'll move these to mqtt_config.py later)
-BROKER = "test.mosquitto.org"  # For testing, replace with ThingSpeak/AWS later
+# ✅ ThingSpeak MQTT Configuration
+MQTT_BROKER = "mqtt3.thingspeak.com"
 PORT = 1883
-TOPIC = "iotassignment/station1"  # Customize your topic
+CHANNEL_ID = "2894353"
+MQTT_USERNAME = "LCQFLiYFLBIDMC4TKx0UHAE"
+MQTT_PASSWORD = "yZUs2Gy0sw2cW0Y+0SyqsLRK"
+WRITE_API_KEY = "FT5B9K5UDO6AOSUU"
 
-# Generate random sensor values
+TOPIC = f"channels/{CHANNEL_ID}/publish/{WRITE_API_KEY}"
+
+# ✅ Generate random sensor values
 def generate_sensor_data():
-    return {
-        "station_id": "station_01",
-        "timestamp": datetime.datetime.utcnow().isoformat(),
-        "temperature": round(random.uniform(-50, 50), 2),
-        "humidity": round(random.uniform(0, 100), 2),
-        "co2": round(random.uniform(300, 2000), 2)
-    }
+    temp = round(random.uniform(-50, 50), 2)
+    hum = round(random.uniform(0, 100), 2)
+    co2 = round(random.uniform(300, 2000), 2)
+    return temp, hum, co2
 
-# MQTT Publish Function
-def publish_data(client):
-    sensor_data = generate_sensor_data()
-    payload = json.dumps(sensor_data)
-    result = client.publish(TOPIC, payload)
-    status = result[0]
-    if status == 0:
-        print(f"✅ Sent `{payload}` to topic `{TOPIC}`")
-    else:
-        print(f"❌ Failed to send message to topic {TOPIC}")
-
-# Setup MQTT client
-client = mqtt.Client()
-client.connect(BROKER, PORT)
-
-# Publish every 10 seconds
 try:
     while True:
-        publish_data(client)
-        time.sleep(10)
+        temp, hum, co2 = generate_sensor_data()
+        payload = f"field1={temp}&field2={hum}&field3={co2}"
+
+        # ✅ New MQTT connection for each publish
+        client = mqtt.Client()
+        client.username_pw_set(MQTT_USERNAME, MQTT_PASSWORD)
+        client.connect(MQTT_BROKER, PORT)
+
+        result = client.publish(TOPIC, payload)
+        status = result[0]
+        if status == 0:
+            print(f"✅ Sent `{payload}` to topic `{TOPIC}`")
+        else:
+            print(f"❌ Failed to send message to topic {TOPIC}")
+
+        client.disconnect()
+        time.sleep(20)  # Give enough delay to avoid rate limit issues
+
 except KeyboardInterrupt:
-    print("🚨 Stopped by user")
+    print("🛑 Publishing stopped by user.")
